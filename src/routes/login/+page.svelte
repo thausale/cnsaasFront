@@ -4,23 +4,25 @@
   import { get } from "svelte/store";
   import cookie from "cookie";
   import { env } from "$env/dynamic/public";
+  import { userStore } from "../../components/user-store";
 
   const endpoint = env.PUBLIC_API_ENDPOINT;
 
-  let user;
   let email = "admin@admin";
   let password = "password";
+  let errorMessage = "";
 
   onMount(() => {
-    console.log("onmount launching");
+    // console.log("onmount launching");
     const cookies = cookie.parse(document.cookie);
     console.log(cookies);
   });
 
   async function handleSubmit() {
-    console.log(email, password);
-    console.log(endpoint);
-    //TODO:Check login info with laravel api
+    //Remove error message
+    errorMessage = "";
+
+    //Check login info with laravel api
     const response = await fetch(`${endpoint}/login`, {
       method: "POST",
       headers: {
@@ -33,8 +35,22 @@
     });
 
     const data = await response.json();
+
+    //This if launches if the credentials are wrong
+    if (data.error) {
+      console.log("wrong credentials");
+      errorMessage = data.error;
+      console.log(errorMessage);
+      return;
+    }
+
+    //Set userdata in the store
+    userStore.set(data.user);
+
+    console.log(userStore.getInfo());
+
+    // console.log($user);
     //This now holds the user's data
-    console.log(data);
     //TODO:create JWT token from laravel API
 
     //TODO:Set JWT in a session cookie
@@ -45,9 +61,13 @@
 </script>
 
 <div>
-  <h2>api endpoint is {endpoint}</h2>
   <h1>Welcome to cnSaas</h1>
   <form on:submit|preventDefault={handleSubmit}>
+    {#if errorMessage}
+      <p class="error">
+        {errorMessage}
+      </p>
+    {/if}
     <label>
       Email:
       <!-- TODO: add type=email when done -->
@@ -70,6 +90,9 @@
 </div>
 
 <style>
+  .error {
+    color: red;
+  }
   div {
     height: 100vh;
     display: flex;
