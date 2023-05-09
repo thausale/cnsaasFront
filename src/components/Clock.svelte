@@ -1,4 +1,7 @@
 <script>
+  import "@skeletonlabs/skeleton/themes/theme-skeleton.css";
+  import "@skeletonlabs/skeleton/styles/skeleton.css";
+
   export let format = "hms";
   export let color = "black";
   export let background = "white";
@@ -27,6 +30,6 @@
   }, 1000);
 </script>
 
-<div style="color: {color}; background-color: {background}; padding: 5px;">
-  <span>{time}</span>
+<div style=" padding: 5px;">
+  <p>{time}</p>
 </div>

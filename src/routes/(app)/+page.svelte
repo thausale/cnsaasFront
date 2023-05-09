@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
   export let data;
   import { onMount } from "svelte";
   import { userStore } from "../../components/user-store.js";
@@ -14,4 +14,4 @@
 
 <main>
   <h1>Welcome, $user.name!</h1>
-</main>
+</main> -->
